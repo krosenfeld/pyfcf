@@ -26,6 +26,7 @@ class FigConfig():
 
     def __init__(self, nx: int, ny: int,
                  idx: (float, None) = None, idy: (float, None) = None,
+                 xs: (float, None) = None, ys: (float, None) = None,
                  xm: list = [], ym: list = [],
                  cbx: float =0, cby: float=0, cpos: (str, None) = None):
         '''
@@ -33,6 +34,8 @@ class FigConfig():
         :param ny: (int) number of sub figure sin y dimension
         :param idx: (float) size of each x sub figure
         :param idy: (float) size of each y sub figure
+        :param xs: (float) size of figure in x dimension
+        :param ys: (float) size of figure in y dimension
         :param xm:
         :param ym:
         :param cbx:
@@ -57,15 +60,29 @@ class FigConfig():
 
         if idx is not None:
             self.idx = idx
-            self.xs = idx*nx + self.xcm[-1]
+            self.xs = idx*self.nx + self.xcm[-1]
             if self.cpos in ['left', 'right']:
                 self.xs += self.cbx
 
         if idy is not None:
             self.idy = idy
-            self.ys = idy*ny + self.ycm[-1]
-            if self.cpos in ['bottomr', 'top']:
+            self.ys = idy*self.ny + self.ycm[-1]
+            if self.cpos in ['bottom', 'top']:
                 self.ys += self.cby
+
+        if xs is not None:
+            self.xs = xs
+            if self.cpos in ['left', 'right']:
+                self.idx = (self.xs - self.xcm[-1] - self.cbx)/self.nx
+            else:
+                self.idx = (self.xs - self.xcm[-1])/self.nx
+
+        if ys is not None:
+            self.ys = ys
+            if self.cpos in ['bottom', 'top']:
+                self.idy = (self.ys - self.ycm[-1] - self.cby)/self.ny
+            else:
+                self.idy = (self.ys - self.ycm[-1])/self.ny
 
         # set normalizing factor
         self.set_nrm()
@@ -134,8 +151,6 @@ class FigConfig():
         plt.rcParams["axes.formatter.use_mathtext"] = True
         plt.rcParams["mathtext.fontset"] = "cm"
         plt.rcParams["figure.dpi"] = 200
-
-        print(os.path.basename(__file__).split('.')[0])
 
     @staticmethod
     def set_fontsize(fontsize: float):
