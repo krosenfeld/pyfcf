@@ -36,11 +36,11 @@ class FigConfig():
         :param idy: (float) size of each y sub figure
         :param xs: (float) size of figure in x dimension
         :param ys: (float) size of figure in y dimension
-        :param xm:
-        :param ym:
-        :param cbx:
-        :param cby:
-        :param cpos:
+        :param xm: (list) size of the x margins
+        :param ym: (list) size of the y margins
+        :param cbx: (float) size of the colorbar in the x dimension
+        :param cby: (float) size of the colorbar in the y dimension
+        :param cpos: (string) position of the colorbar
         '''
 
         self.nx = nx
@@ -98,6 +98,10 @@ class FigConfig():
         if self.cpos is not None:
             assert(self.cpos in ['bottom', 'top', 'left', 'right'])
 
+        if self.cbx != 0 or self.cby != 0:
+            assert(self.cpos is not None)
+
+
     def set_nrm(self):
         self.nrm =  np.array([self.xs, self.ys, self.xs, self.ys])
 
@@ -117,17 +121,25 @@ class FigConfig():
         return rect / self.nrm
 
     def get_cax_rect(self):
-        '''Colorbar axes position'''
+        '''Colorbar axis position'''
+
         if self.cpos is None:
             return
         elif self.cpos == 'bottom':
-            rect = np.array([self.xs/2 - self.cbx/2, self.ycm[0], self.cbx, self.cby])
+            fig_block =  (self.xcm[-2] - self.xcm[0] + self.nx*self.idx)
+            rect = np.array([self.xcm[0] + fig_block/2 - self.cbx/2, self.ycm[0], self.cbx, self.cby])
         elif self.cpos == 'top':
-            rect = np.array([self.xs/2 - self.cbx/ 2, self.ycm[-2]+self.idy*self.ny, self.cbx, self.cby])
+            fig_block =  (self.xcm[-2] - self.xcm[0] + self.nx*self.idx)
+            rect = np.array([self.xcm[0] + fig_block/2 - self.cbx/2, self.ycm[-2] + self.idy*self.ny, 
+            self.cbx, self.cby])
         elif self.cpos == 'left':
-            rect = np.array([self.xcm[0], self.ys/2 - self.cby/2, self.cbx, self.cby])
+            fig_block =  (self.ycm[-2] - self.ycm[0] + self.ny*self.idy)
+            rect = np.array([self.xcm[0], self.ycm[0] + fig_block/2 - self.cby/2, 
+                self.cbx, self.cby])
         elif self.cpos == 'right':
-            rect = np.array([self.xcm[-2]+self.idx*self.nx, self.ys/2 - self.cby/2, self.cbx, self.cby])
+            fig_block =  (self.ycm[-2] - self.ycm[0] + self.ny*self.idy)
+            rect = np.array([self.xcm[-2] + self.idx*self.nx, self.ycm[0] + fig_block/2 - self.cby/2,
+                self.cbx, self.cby])
         else:
             raise ValueError('Do not understand cpos:', self.cpos)
 
