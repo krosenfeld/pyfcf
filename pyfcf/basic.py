@@ -155,14 +155,14 @@ class FigConfig():
         ax.tick_params(labelsize=ticklabelsize)
 
     @staticmethod
-    def matplotlib_setup(fontsize: (int, float) = 12, fontfamily=None) -> None:
+    def matplotlib_setup(fontsize: (int, float) = 12, fontfamily=None, dpi=200) -> None:
         if fontfamily is None:
             fontfamily = ['DejaVu Sans', 'Garamond', 'Proxima Nova'][1]
         plt.rcParams["font.size"] = fontsize
         plt.rcParams["font.family"] = fontfamily
         plt.rcParams["axes.formatter.use_mathtext"] = True
         plt.rcParams["mathtext.fontset"] = "cm"
-        plt.rcParams["figure.dpi"] = 200
+        plt.rcParams["figure.dpi"] = dpi
 
     @staticmethod
     def set_fontsize(fontsize: float):
