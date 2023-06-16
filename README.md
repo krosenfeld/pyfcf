@@ -6,4 +6,16 @@ README
 
 To install:
 
+```
   pip install pyfcf
+```
+
+# Examples
+
+Initialize basic `matplotlib` settings:
+
+```
+pyfcf.setup_matplotlib()
+```
+
+See `examples/` folder.
