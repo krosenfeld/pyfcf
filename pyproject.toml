@@ -4,13 +4,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pyfcf"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Katherine Rosenfeld", email="krosenf@gmail.com" },
 ]
 description = "Package to create standardized, publication quality matplotlib figures"
 readme = "README.md"
 requires-python = ">=3.7"
+dependencies = [
+  "matplotlib"
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
