@@ -4,6 +4,10 @@ README
 
 # Installation
 
+Requirements:
+
+- maptlotlib
+
 To install:
 
 ```
