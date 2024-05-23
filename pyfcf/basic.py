@@ -1,16 +1,17 @@
+from typing import Union
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 __ALL__ = ["FigConfig",  "setup_matplotlib", "axes_setup"]
 
-def setup_matplotlib(font_size:(int, float) =14) -> None:
+def setup_matplotlib(font_size:Union[int, float] =14, **kwargs) -> None:
     plt.rcParams["font.size"] = font_size
-    # font_family = ['DejaVu Sans', 'Garamond', 'Proxima Nova'][1]
-    # plt.rcParams["font.family"] = font_family
     plt.rcParams["axes.formatter.use_mathtext"] = True
     plt.rcParams["mathtext.fontset"] = "cm"
     plt.rcParams["figure.dpi"] = 200
-
+    for key, value in kwargs.items():
+        plt.rcParams[key] = value
 
 def axes_setup(axes):
     axes.spines["left"].set_position(("axes",-0.025))
@@ -25,10 +26,10 @@ class FigConfig():
     '''
 
     def __init__(self, nx: int, ny: int,
-                 idx: (float, None) = None, idy: (float, None) = None,
-                 xs: (float, None) = None, ys: (float, None) = None,
+                 idx: Union[float, None] = None, idy: Union[float, None] = None,
+                 xs: Union[float, None] = None, ys: Union[float, None] = None,
                  xm: list = [], ym: list = [],
-                 cbx: float =0, cby: float=0, cpos: (str, None) = None):
+                 cbx: float =0, cby: float=0, cpos: Union[str, None] = None):
         '''
         :param nx: (int) number of sub figures in x dimension
         :param ny: (int) number of sub figure sin y dimension
@@ -59,30 +60,36 @@ class FigConfig():
         self.cby = cby
 
         if idx is not None:
-            self.idx = idx
-            self.xs = idx*self.nx + self.xcm[-1]
+            if isinstance(idx, (float, int)):
+                self.idx = [idx]
+            else:     
+                self.idx = idx
+            self.xs = np.sum(idx) + self.xcm[-1]
             if self.cpos in ['left', 'right']:
                 self.xs += self.cbx
 
         if idy is not None:
-            self.idy = idy
-            self.ys = idy*self.ny + self.ycm[-1]
+            if isinstance(idy, (float, int)):
+                self.idy = [idy]
+            else:     
+                self.idy = idy            
+            self.ys = np.sum(idy) + self.ycm[-1]
             if self.cpos in ['bottom', 'top']:
                 self.ys += self.cby
 
         if xs is not None:
             self.xs = xs
             if self.cpos in ['left', 'right']:
-                self.idx = (self.xs - self.xcm[-1] - self.cbx)/self.nx
+                self.idx = (self.xs - self.xcm[-1] - self.cbx)
             else:
-                self.idx = (self.xs - self.xcm[-1])/self.nx
+                self.idx = (self.xs - self.xcm[-1])
 
         if ys is not None:
             self.ys = ys
             if self.cpos in ['bottom', 'top']:
-                self.idy = (self.ys - self.ycm[-1] - self.cby)/self.ny
+                self.idy = (self.ys - self.ycm[-1] - self.cby)
             else:
-                self.idy = (self.ys - self.ycm[-1])/self.ny
+                self.idy = (self.ys - self.ycm[-1])
 
         # set normalizing factor
         self.set_nrm()
@@ -115,8 +122,9 @@ class FigConfig():
             rect = np.array([self.xcm[ix+1]+ix*self.idx+self.cbx,
                              self.ycm[iy]+iy*self.idy, self.idx, self.idy])
         else:
-            rect = np.array([self.xcm[ix]+ix*self.idx,
-                             self.ycm[iy]+iy*self.idy, self.idx, self.idy])
+            rect = np.array([self.xcm[ix]+np.cumsum(np.concatenate(([0],self.idx)))[ix],
+                             self.ycm[iy]+np.cumsum(np.concatenate(([0],self.idy)))[iy], 
+                             self.idx[ix], self.idy[iy]])
 
         return rect / self.nrm
 
@@ -146,7 +154,7 @@ class FigConfig():
         return rect / self.nrm
 
     @staticmethod
-    def axes_setup(ax,
+    def setup_axes(ax,
                    left_position=-0.025, top_visible=False, right_visible=False,
                    ticklabelsize=10):
         ax.spines["left"].set_position(("axes",left_position))
@@ -155,14 +163,14 @@ class FigConfig():
         ax.tick_params(labelsize=ticklabelsize)
 
     @staticmethod
-    def matplotlib_setup(fontsize: (int, float) = 12, fontfamily=None, dpi=200) -> None:
-        if fontfamily is None:
-            fontfamily = ['DejaVu Sans', 'Garamond', 'Proxima Nova'][1]
-        plt.rcParams["font.size"] = fontsize
-        plt.rcParams["font.family"] = fontfamily
+    def setup_matplotlib(font_size: Union[int, float] = 12, dpi=200, **kwargs) -> None:
+        plt.rcParams["font.size"] = font_size
+        # plt.rcParams["font.family"] = fontfamily
         plt.rcParams["axes.formatter.use_mathtext"] = True
         plt.rcParams["mathtext.fontset"] = "cm"
         plt.rcParams["figure.dpi"] = dpi
+        for key, value in kwargs.items():
+            plt.rcParams[key] = value
 
     @staticmethod
     def set_fontsize(fontsize: float):
@@ -180,4 +188,4 @@ class FigConfig():
         :param p: path of the script
         :return: string without path and extension
         '''
-        return os.path.splitext(os.path.basename(p))[0]
+        return Path(p).stem
