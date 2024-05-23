@@ -1,4 +1,7 @@
 *.png
 __pycache__/
 env/
-dist/
+dist/# pixi environments
+.pixi
+*.egg-info
+
