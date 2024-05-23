@@ -1,11 +1,14 @@
+""" single_figure.py
+Create a single figure with defined axis and margin size.
+"""
 import pyfcf
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 x = [1,2,3,4]
 y = [1,1,2,5]
 
 def example1():
-
 
     xm = [0.4, 0.05] # x margin
     ym = [0.4, 0.3] # y margin
@@ -21,8 +24,7 @@ def example1():
     ax.plot(x,y,'-o')
     ax.set_title('Title')
 
-    plt.savefig('examples/example1.png')
-
+    plt.savefig(Path(__file__).resolve().parent / 'single_figure.png')
 
 if __name__ == "__main__":
 
