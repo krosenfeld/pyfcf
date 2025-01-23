@@ -80,16 +80,16 @@ class FigConfig():
         if xs is not None:
             self.xs = xs
             if self.cpos in ['left', 'right']:
-                self.idx = (self.xs - self.xcm[-1] - self.cbx)
+                self.idx = self.nx*[(self.xs - self.xcm[-1] - self.cbx) / self.nx]
             else:
-                self.idx = (self.xs - self.xcm[-1])
+                self.idx = self.nx*[(self.xs - self.xcm[-1]) / self.nx]
 
         if ys is not None:
             self.ys = ys
             if self.cpos in ['bottom', 'top']:
-                self.idy = (self.ys - self.ycm[-1] - self.cby)
+                self.idy = self.ny*[(self.ys - self.ycm[-1] - self.cby)/self.ny]
             else:
-                self.idy = (self.ys - self.ycm[-1])
+                self.idy = self.ny*[(self.ys - self.ycm[-1])/self.ny]
 
         # set normalizing factor
         self.set_nrm()
@@ -122,8 +122,10 @@ class FigConfig():
             rect = np.array([self.xcm[ix+1]+ix*self.idx+self.cbx,
                              self.ycm[iy]+iy*self.idy, self.idx, self.idy])
         else:
-            rect = np.array([self.xcm[ix]+np.cumsum(np.concatenate(([0],self.idx)))[ix],
-                             self.ycm[iy]+np.cumsum(np.concatenate(([0],self.idy)))[iy], 
+            idx = [self.idx] if not isinstance(self.idx, list) else self.idx
+            idy = [self.idy] if not isinstance(self.idy, list) else self.idy
+            rect = np.array([self.xcm[ix]+np.cumsum(np.concatenate(([0],idx)))[ix],
+                             self.ycm[iy]+np.cumsum(np.concatenate(([0],idy)))[iy], 
                              self.idx[ix], self.idy[iy]])
 
         return rect / self.nrm
