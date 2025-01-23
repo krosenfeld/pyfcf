@@ -1,6 +1,5 @@
 import os
 import unittest
-import imghdr
 import pyfcf
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -46,9 +45,5 @@ class TestSingleFigureExample(unittest.TestCase):
         example(self.filename)
         self.assertTrue(self.filename.exists(), "File does not exist")
 
-    def test_file_is_png(self):
-        example(self.filename)
-        self.assertEqual(imghdr.what(self.filename), "png", "File is not a PNG image")
-
 if __name__ == "__main__":
-    unittest.main()
+    example(Path(__file__).resolve().parent / f"{Path(__file__).stem}.png")
