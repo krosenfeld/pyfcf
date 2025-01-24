@@ -57,3 +57,14 @@ commit_args = ""
 filename = "pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = 'pyfcf/version.py'
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = 'pyfcf/version.py'
+search = "__versiondate__ = '\\d{{4}}-\\d{{2}}-\\d{{2}}'"
+replace = "__versiondate__ = '{now:%Y-%m-%d}'"
+regex = true
