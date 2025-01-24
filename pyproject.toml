@@ -65,6 +65,6 @@ replace = '__version__ = "{new_version}"'
 
 [[tool.bumpversion.files]]
 filename = 'pyfcf/version.py'
-search = '__versiondate__ = "\\d{{4}}-\\d{{2}}-\\d{{2}}"'
-replace = '__versiondate__ = "{now:%Y-%m-%d}"'
+search = "__versiondate__ = '\\d{{4}}-\\d{{2}}-\\d{{2}}'"
+replace = "__versiondate__ = '{now:%Y-%m-%d}'"
 regex = true
